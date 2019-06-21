@@ -119,6 +119,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! ContactCell
+        let detailVC = ContactDetailVC(nibName: "ContactDetailVC", bundle: nil)
+        detailVC.contact = cell.contact!
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
