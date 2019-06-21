@@ -171,11 +171,11 @@
 		990E1CF022BD48BC00818C1C /* ContactDetailView */ = {
 			isa = PBXGroup;
 			children = (
-				990E1CF122BD48BC00818C1C /* ContactDetailCell.xib */,
-				990E1CF222BD48BC00818C1C /* ContactDetailCell.swift */,
-				990E1CF322BD48BC00818C1C /* ContactDetailVC.swift */,
-				990E1CF422BD48BC00818C1C /* ContactDelete.xib */,
 				990E1CF522BD48BC00818C1C /* ContactDelete.swift */,
+				990E1CF422BD48BC00818C1C /* ContactDelete.xib */,
+				990E1CF222BD48BC00818C1C /* ContactDetailCell.swift */,
+				990E1CF122BD48BC00818C1C /* ContactDetailCell.xib */,
+				990E1CF322BD48BC00818C1C /* ContactDetailVC.swift */,
 				990E1CF622BD48BC00818C1C /* ContactDetailVC.xib */,
 			);
 			path = ContactDetailView;

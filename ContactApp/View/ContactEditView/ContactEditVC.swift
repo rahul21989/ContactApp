@@ -84,19 +84,12 @@ class ContactEditVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
         if !firstName.isEmpty && !lastName.isEmpty && !mobile.isEmpty && !email.isEmpty {
             if let contact = contact {
-                let urlString = String(format: updateContact, contact.id)
-                let urlObject = URLObject(urlPath: urlString)
-                urlObject.headerParams = ["Content-Type" : "application/json", "Accept" : "application/json"]
-                urlObject.params = ["first_name": firstName, "last_name": lastName, "email": email, "phone_number":mobile, "favorite":contact.favorite]
-                urlObject.encoding = DictionaryEncoding()
-                DataManager.putData(fromURLObject: urlObject, ofType: Contact.self) { (contact, info, error) in
+                ContactManager.updateContactData(contactId: contact.id, firstName: firstName, lastName: lastName, email: email, mobile: mobile, favorite: contact.favorite) { (contact, info, error) in
                     if (error == nil) {
                         self.contact = contact
                     }
                 }
             }
-            
-
         }
     }
     

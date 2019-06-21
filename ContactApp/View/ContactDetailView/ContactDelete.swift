@@ -19,8 +19,7 @@ class ContactDelete: UITableViewHeaderFooterView {
     
     @IBAction func deleteButtonTapped() {
         if let contact = contact{
-            let urlObject = URLObject.init(urlPath: String(format: deleteContact, contact.id))
-            DataManager.deleteData(fromURLObject: urlObject) { (verifyResponse, info, error) in
+            ContactManager.deleteContactData(contactId: contact.id) { (verifyResponse, info, error) in
                 if error == nil {
                     self.controller?.navigationController?.popViewController(animated: true)
                 }

@@ -19,11 +19,6 @@ class ContactAppTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
@@ -40,5 +35,38 @@ class ContactAppTests: XCTestCase {
                 XCTAssertTrue(true)
             }
         }
+    }
+    
+    func testAddContact() {
+        ContactManager.addContactData(contact:mockContact()) { (contact, info, error) in
+            if error != nil {
+                XCTFail("errored: \(String(describing: error))")
+            }
+            if contact != nil {
+                XCTAssertTrue(true)
+            }
+        }
+    }
+    
+    func testUpdateContact() {
+        // make sure id is exist in contact list
+        ContactManager.updateContactData(contactId: 3667, firstName: "firstName", lastName: "lastName", email: "email", mobile: "mobile", favorite: true) { (contact, info, error) in
+            if error != nil {
+                XCTFail("errored: \(String(describing: error))")
+            }
+            if contact != nil {
+                XCTAssertTrue(true)
+            }
+        }
+    }
+    
+    func mockContact() -> Contact {
+        let contact = Contact()
+        contact.first_name  = "Rahul"
+        contact.last_name   = "Goyal"
+        contact.email  = "rahul2.1989@gmail.com"
+        contact.phone_number  = "+627383330003"
+        contact.favorite = true
+        return contact
     }
 }
