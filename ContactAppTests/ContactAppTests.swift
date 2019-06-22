@@ -49,13 +49,40 @@ class ContactAppTests: XCTestCase {
     }
     
     func testUpdateContact() {
-        // make sure id is exist in contact list
-        ContactManager.updateContactData(contactId: 3667, firstName: "firstName", lastName: "lastName", email: "email", mobile: "mobile", favorite: true) { (contact, info, error) in
+        ContactManager.getContactData() { (contactList, info, error) in
             if error != nil {
                 XCTFail("errored: \(String(describing: error))")
             }
-            if contact != nil {
-                XCTAssertTrue(true)
+            if contactList != nil {
+                if let contact = contactList?.first {
+                    ContactManager.updateContactData(contactId: contact.id, firstName: "firstName", lastName: "lastName", email: "email", mobile: "mobile", favorite: true) { (contact, info, error) in
+                        if error != nil {
+                            XCTFail("errored: \(String(describing: error))")
+                        }
+                        if contact != nil {
+                            XCTAssertTrue(true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func testDeleteContact() {
+        ContactManager.getContactData() { (contactList, info, error) in
+            if error != nil {
+                XCTFail("errored: \(String(describing: error))")
+            }
+            if contactList != nil {
+                if let contact = contactList?.first {
+                    ContactManager.deleteContactData(contactId: contact.id) { (response, info, error) in
+                        if error != nil {
+                            XCTFail("errored: \(String(describing: error))")
+                        } else {
+                            XCTAssertTrue(true)
+                        }
+                    }
+                }
             }
         }
     }

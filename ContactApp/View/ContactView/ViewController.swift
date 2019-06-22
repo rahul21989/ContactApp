@@ -11,6 +11,8 @@ import UIKit
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
     var orderedContacts = [String: [Contact]]() //Contacts ordered in dicitonary alphabetically
     var sortedContactKeys = [String]()
     var filteredContacts = [Contact]()
@@ -26,30 +28,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func fetchContactData() {
+        activityIndicator.startAnimating()
         ContactManager.getContactData() { (contactList, info, error) in
+            self.activityIndicator.stopAnimating()
             if let contactList = contactList {
-                self.filteredContacts = contactList
-                for contact in contactList {
-                    var key: String = "#"
-                    //If ordering has to be happening via frist name change it here.
-                    if let firstLetter = contact.first_name [0..<1], firstLetter.containsAlphabets() {
-                        key = firstLetter.uppercased()
-                    }
-                    var tempContacts = [Contact]()
-                    
-                    if let segregatedContact = self.orderedContacts[key] {
-                        tempContacts = segregatedContact
-                    }
-                    tempContacts.append(contact)
-                    self.orderedContacts[key] = tempContacts
+                DispatchQueue.main.async {
+                    self.contactsSorted(contactList: contactList)
+                    self.tableView.reloadData()
                 }
-                
-                self.sortedContactKeys = Array(self.orderedContacts.keys).sorted(by: <)
-                if self.sortedContactKeys.first == "#" {
-                    self.sortedContactKeys.removeFirst()
-                    self.sortedContactKeys.append("#")
-                }
-                self.tableView.reloadData()
             }
         }
     }
@@ -60,14 +46,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
         let nextButton = UIBarButtonItem(title: "add", style: .done, target: self, action: #selector(addTapped))
         self.navigationItem.rightBarButtonItem = nextButton
     }
     
+    func contactsSorted(contactList : [Contact]) {
+        self.filteredContacts = contactList
+        self.orderedContacts = [String:[Contact]]()
+        for contact in contactList {
+            var key: String = "#"
+            //If ordering has to be happening via frist name change it here.
+            if let firstLetter = contact.first_name [0..<1], firstLetter.containsAlphabets() {
+                key = firstLetter.uppercased()
+            }
+            var tempContacts = [Contact]()
+            
+            if let segregatedContact = self.orderedContacts[key] {
+                tempContacts = segregatedContact
+            }
+            tempContacts.append(contact)
+            self.orderedContacts[key] = tempContacts
+        }
+        
+        self.sortedContactKeys = Array(self.orderedContacts.keys).sorted(by: <)
+        if self.sortedContactKeys.first == "#" {
+            self.sortedContactKeys.removeFirst()
+            self.sortedContactKeys.append("#")
+        }
+    }
+
     
     @objc func addTapped() {
-        
+        let addVC = ContactAddEditVC(nibName: "ContactAddEditVC", bundle: nil)
+        addVC.contact = Contact()
+        addVC.mode = .add
+        self.present(addVC,animated: true, completion: nil)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

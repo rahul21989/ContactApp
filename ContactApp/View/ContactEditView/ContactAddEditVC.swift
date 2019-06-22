@@ -13,16 +13,20 @@ enum fieldType : Int {
     case name, lastName, mob, email
 }
 
-class ContactEditVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+enum viewMode : Int {
+    case add, edit
+}
+
+
+class ContactAddEditVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var contactImageView: UIImageView!
-
     var contact: Contact?
+    var mode: viewMode = .add
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.register(UINib(nibName: "ContactDetailCell", bundle: nil), forCellReuseIdentifier: "ContactDetailCell")
         setUpContactImage()
     }
@@ -45,10 +49,10 @@ class ContactEditVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         return 4
     }
     
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "ContactDetailCell") as! ContactDetailCell
-        
+
         if let contact = contact {
             if indexPath.row == 0 {
                 cell.updateDetailUI(contact, type: .name)
@@ -73,7 +77,7 @@ class ContactEditVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     @IBAction func doneButtonTapped(_ sender: Any){
-
+        
         let firstName = (self.tableView(self.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! ContactDetailCell).contactTextLabel.text ?? ""
         
         let lastName = (self.tableView(self.tableView, cellForRowAt: IndexPath(row: 1, section: 0)) as! ContactDetailCell).contactTextLabel.text ?? ""
@@ -83,10 +87,27 @@ class ContactEditVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         let email = (self.tableView(self.tableView, cellForRowAt: IndexPath(row: 3, section: 0)) as! ContactDetailCell).contactTextLabel.text ?? ""
         
         if !firstName.isEmpty && !lastName.isEmpty && !mobile.isEmpty && !email.isEmpty {
+            
             if let contact = contact {
-                ContactManager.updateContactData(contactId: contact.id, firstName: firstName, lastName: lastName, email: email, mobile: mobile, favorite: contact.favorite) { (contact, info, error) in
-                    if (error == nil) {
-                        self.contact = contact
+                if mode == .edit {
+                    ContactManager.updateContactData(contactId: contact.id, firstName: firstName, lastName: lastName, email: email, mobile: mobile, favorite: contact.favorite) { (contact, info, error) in
+                        if (error == nil) {
+                            self.contact = contact
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+                else {
+                    contact.first_name = firstName
+                    contact.last_name = lastName
+                    contact.email = email
+                    contact.phone_number = mobile
+                    contact.favorite = true
+                    ContactManager.addContactData(contact: contact) { (contact, info, error) in
+                        if (error == nil) {
+                            self.contact = contact
+                            self.dismiss(animated: true, completion: nil)
+                        }
                     }
                 }
             }

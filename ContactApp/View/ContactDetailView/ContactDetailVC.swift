@@ -11,7 +11,6 @@ import MessageUI
 
 class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate  {
     
-    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var contactName: UILabel!
     @IBOutlet weak var contactImageView: UIImageView!
@@ -19,7 +18,6 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     @IBOutlet weak var callButton: UIButton!
     @IBOutlet weak var emailButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
-
 
     var contact: Contact?
     
@@ -33,11 +31,12 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         self.navigationItem.rightBarButtonItem = editButton
         
         tableView.register(UINib(nibName: "ContactDelete", bundle: nil), forHeaderFooterViewReuseIdentifier: "ContactDelete")
-        
         tableView.register(UINib(nibName: "ContactDetailCell", bundle: nil), forCellReuseIdentifier: "ContactDetailCell")
-        
         tableView.backgroundColor = UIColor.init(red: 245.0/255.0, green: 245.0/255.0, blue: 245.0/255.0, alpha: 1.0)
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setUpContactDetailData()
     }
     
@@ -49,7 +48,7 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         if let contact = contact {
             contactName?.text = contact.first_name
-            let defaultURL = "http://gojek-contacts-app.herokuapp.com" + contact.profile_pic
+            let defaultURL = baseURL + contact.profile_pic
             contactImageView?.setImageWithURL(defaultURL, withCompletionBlock: {(_ imageURL: String, _ error: Error?) -> Void in
                 self.contactImageView.contentMode = .scaleAspectFill
             })
@@ -66,6 +65,8 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
                 self.favoriteButton.setImage(UIImage(named: "favourite_button_selected"), for: .normal)
                 self.favoriteButton.setImage(UIImage(named: "favourite_button_selected"), for: .highlighted)
             }
+            
+            self.tableView.reloadData()
         }
     }
     
@@ -111,8 +112,9 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     
     @objc func editButtonTapped() {
-        let editVC = ContactEditVC(nibName: "ContactEditVC", bundle: nil)
+        let editVC = ContactAddEditVC(nibName: "ContactAddEditVC", bundle: nil)
         editVC.contact = contact
+        editVC.mode = .edit
         self.present(editVC,animated: true, completion: nil)
     }
     
