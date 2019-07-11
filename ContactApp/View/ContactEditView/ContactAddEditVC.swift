@@ -21,12 +21,24 @@ enum viewMode : Int {
 class ContactAddEditVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableHeaderView: UIView!
     @IBOutlet weak var contactImageView: UIImageView!
     var contact: Contact?
     var mode: viewMode = .add
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.tableHeaderView = tableHeaderView
+        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
+        self.navigationItem.rightBarButtonItem = doneButton
+        
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(cancelButtonTapped))
+        self.navigationItem.leftBarButtonItem = cancelButton
+        
         tableView.register(UINib(nibName: "ContactDetailCell", bundle: nil), forCellReuseIdentifier: "ContactDetailCell")
         setUpContactImage()
     }
@@ -43,6 +55,7 @@ class ContactAddEditVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                 self.contactImageView.contentMode = .scaleAspectFill
             })
         }
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -71,13 +84,8 @@ class ContactAddEditVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         return 56.0
     }
     
-    
-    @IBAction func cancelButtonTapped(_ sender: Any){
-        dismiss(animated: false, completion:nil)
-    }
-    
-    @IBAction func doneButtonTapped(_ sender: Any){
-        
+
+    @objc func doneButtonTapped(){
         let firstName = (self.tableView(self.tableView, cellForRowAt: IndexPath(row: 0, section: 0)) as! ContactDetailCell).contactTextLabel.text ?? ""
         
         let lastName = (self.tableView(self.tableView, cellForRowAt: IndexPath(row: 1, section: 0)) as! ContactDetailCell).contactTextLabel.text ?? ""
@@ -120,6 +128,10 @@ class ContactAddEditVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                 self.contactImageView.image = selectedImage
             }
         })
+    }
+    
+    @objc func cancelButtonTapped() {
+        dismiss(animated: false, completion:nil)
     }
 }
 

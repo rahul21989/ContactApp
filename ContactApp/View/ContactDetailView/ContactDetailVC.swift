@@ -115,7 +115,8 @@ class ContactDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         let editVC = ContactAddEditVC(nibName: "ContactAddEditVC", bundle: nil)
         editVC.contact = contact
         editVC.mode = .edit
-        self.present(editVC,animated: true, completion: nil)
+        let nav = UINavigationController(rootViewController: editVC)
+        self.present(nav,animated: true, completion: nil)
     }
     
     

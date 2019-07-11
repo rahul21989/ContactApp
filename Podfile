@@ -9,7 +9,7 @@ target 'ContactApp' do
   pod 'ObjectMapper', '~> 3.3.0'
   pod 'ReachabilitySwift', '4.1.0'
   pod 'SDWebImage', '4.4.2'
-  
+  pod 'TPKeyboardAvoiding', '1.3.2'
   target 'ContactAppTests' do
       inherit! :search_paths
   end

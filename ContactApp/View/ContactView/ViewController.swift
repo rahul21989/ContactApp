@@ -80,7 +80,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let addVC = ContactAddEditVC(nibName: "ContactAddEditVC", bundle: nil)
         addVC.contact = Contact()
         addVC.mode = .add
-        self.present(addVC,animated: true, completion: nil)
+    
+        let nav = UINavigationController(rootViewController: addVC)
+        self.present(nav,animated: true, completion: nil)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
